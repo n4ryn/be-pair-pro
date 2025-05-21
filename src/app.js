@@ -1,66 +1,74 @@
 const express = require("express");
 
+const { adminAuth, userAuth } = require("./middleware/auth");
+
 const app = express();
 
 port = process.env.PORT || 9000;
 
-// app.use will match all the HTTP method API calls to /test
-// app.use("/user", (req, res) => {
-//   res.send("User Data");
+// GET /user => Middleware chain => Route Handlers
+
+// Multiple route handlers
+// app.use("/user", rh1, [rh2, rh3], rh4, rh5);
+// app.use(
+//   "/user",
+//   (req, res, next) => {
+//     // 1st Route Handler
+//     console.log("Handling the user route 1");
+
+//     // res.send("Response 1st");
+
+//     // Pass the request to next route handler
+//     next();
+//   },
+//   (req, res, next) => {
+//     // 2nd Route Handler
+//     console.log("Handling the user route 2");
+
+//     // res.send("Response 2nd");
+//     next();
+//   },
+//   (req, res) => {
+//     // 3rd Route Handler
+//     console.log("Handling the user route 3");
+
+//     res.send("Response 3rd");
+//   }
+// );
+
+// app.use("/user", (req, res, next) => {
+//   console.log("Handling the user route 1");
+//   // res.send("Response 1");
+//   next();
 // });
 
-// app.get or app.post will match exact HTTP method API call
+// app.use("/user", (req, res, next) => {
+//   console.log("Handling the user route 2");
+//   res.send("Response 2");
+//   // next();
+// });
+
+// app.use("/admin", adminAuth);
+
+// app.get("/user", userAuth, (req, res) => {
+//   res.send("User data sent");
+// });
+
+// app.get("/admin/getAllData", (req, res) => {
+//   res.send("All data fetched");
+// });
+
+// app.get("/admin/deleteUser", (req, res) => {
+//   res.send("User deleted");
+// });
+
 app.get("/user", (req, res) => {
-  // Extracting query parameters
-  console.log("Query Params", req.query.name);
-
-  res.send({ firstName: "Vinay", lastName: "Kumar" });
+  throw new Error("Something");
+  res.send("User data sent");
 });
 
-app.post("/user", (req, res) => {
-  console.log("Data saved");
-  res.send("User created successfully");
-});
-
-app.delete("/user", (req, res) => {
-  console.log("Data deleted");
-  res.send("User deleted successfully");
-});
-
-// Regular Expression Path
-
-// Optional request path: b will be optional i.e., /abc or /ac also multiple letter can be grouped like /a(bc)?d
-// app.get("/ab?c", (req, res) => {
-//   res.send("Hello");
-// });
-
-// Same key letter can be repeated in request path: i.e., /abbbbbbbc will work but /abcccc or /aaaabc will not work
-// app.get("/ab+c", (req, res) => {
-//   res.send("Hello");
-// });
-
-// Anything in place of asterisk(*) request path: i.e., /abANYTHINGc
-// app.get("/ab*c", (req, res) => {
-//   res.send("Hi");
-// });
-
-// Regex in routes
-// Route can start with anything but end should be with fly
-// app.get(/.*fly$/, (req, res) => {
-//   res.send("Fly");
-// });
-
-// Route can be anything which includes a
-// app.get(/a/, (req, res) => {
-//   res.send("anything a");
-// });
-
-// Dynamic Paths
-app.get("/xyz/:id", (req, res) => {
-  // Extracting Path Parameters
-  console.log("Path Params: ", req.params.id);
-
-  res.send("Hi");
+app.use("/", (err, req, res, next) => {
+  if (err) res.status(500).send("Something went Wrong");
 });
 
 app.listen(port, () => {
