@@ -29,7 +29,7 @@ router.post("/send/:status/:toUserId", userAuth, async (req, res) => {
     // Check if toUser exists
     const toUserExists = await User.findById(toUserId);
     if (!toUserExists) {
-      throw new Error("User does not exists");
+      throw new Error("User not found");
     }
 
     // Check if connection request already exists
@@ -40,7 +40,7 @@ router.post("/send/:status/:toUserId", userAuth, async (req, res) => {
       ],
     });
     if (existingConnectionRequest) {
-      throw new Error("Connection request already exists");
+      throw new Error("Connection already exists");
     }
 
     // Create connection request
@@ -53,9 +53,16 @@ router.post("/send/:status/:toUserId", userAuth, async (req, res) => {
     // Save the connection request
     const data = await connectionRequest.save();
 
-    res.send({ message: "Connection request sent successfully", data });
+    res.status(200).send({
+      status: "success",
+      message: "Connection request sent successfully",
+      data,
+    });
   } catch (error) {
-    res.status(400).send({ message: "ERROR: " + error.message });
+    res.status(400).send({
+      status: "error",
+      message: error.message || "Something went wrong",
+    });
   }
 });
 
@@ -84,9 +91,16 @@ router.post("/review/:status/:requestId", userAuth, async (req, res) => {
     // Save the connection request
     const data = await connectionRequest.save();
 
-    res.send({ message: "Connection request sent successfully", data });
+    res.status(200).send({
+      status: "success",
+      message: "Connection request sent successfully",
+      data,
+    });
   } catch (error) {
-    res.status(400).send({ message: "ERROR: " + error.message });
+    res.status(400).send({
+      status: "error",
+      message: error.message || "Something went wrong",
+    });
   }
 });
 

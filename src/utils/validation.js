@@ -64,7 +64,7 @@ const validatePasswordEditData = (req) => {
   if (!isEditAllowed) {
     throw new Error("Invalid password update request");
   } else if (!validator.isStrongPassword(newPassword)) {
-    throw new Error("New Password is not Strong");
+    throw new Error("New password is not Strong");
   }
 };
 
@@ -96,6 +96,19 @@ const validateReviewConnectionRequest = (req) => {
   }
 };
 
+// Validate feed data
+const validateFeedData = (req) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+
+  // Validate data
+  if (page < 1) {
+    throw new Error("Page number is not valid");
+  } else if (limit < 1 || limit > 20) {
+    throw new Error("Limit should be between 1 to 20");
+  }
+};
+
 module.exports = {
   validateSignupData,
   validateLoginData,
@@ -103,4 +116,5 @@ module.exports = {
   validatePasswordEditData,
   validateSendConnectionRequest,
   validateReviewConnectionRequest,
+  validateFeedData,
 };
