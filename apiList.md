@@ -14,13 +14,11 @@
 
 ### requestRouter
 
-- POST /request/send/interested/:userId
-- POST /request/send/ignore/:userId
-- POST /request/review/accepted/:requestId
-- POST /request/review/rejected/:requestId
+- POST /request/send/:status/:userId
+- POST /request/review/:status/:requestId
 
 ### userRouter
 
 - GET /user/connections
-- GET /user/request/received
+- GET /user/request
 - GET /user/feed

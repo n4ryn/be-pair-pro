@@ -68,8 +68,8 @@ const validatePasswordEditData = (req) => {
   }
 };
 
-// Validate sent connection request data
-const validateSentConnectionRequest = (req) => {
+// Validate send connection request data
+const validateSendConnectionRequest = (req) => {
   const toUserId = req.params.toUserId;
   const status = req.params.status;
   const allowedStatus = ["interested", "ignore"];
@@ -82,10 +82,25 @@ const validateSentConnectionRequest = (req) => {
   }
 };
 
+// Validate review connection request data
+const validateReviewConnectionRequest = (req) => {
+  const requestId = req.params.requestId;
+  const status = req.params.status;
+  const allowedStatus = ["accepted", "rejected"];
+
+  // Validate data
+  if (!allowedStatus.includes(status)) {
+    throw new Error("Invalid request status type");
+  } else if (!validator.isMongoId(requestId)) {
+    throw new Error("Invalid request id");
+  }
+};
+
 module.exports = {
   validateSignupData,
   validateLoginData,
   validateProfileEditData,
   validatePasswordEditData,
-  validateSentConnectionRequest,
+  validateSendConnectionRequest,
+  validateReviewConnectionRequest,
 };
