@@ -40,7 +40,7 @@ router.post("/signup", async (req, res) => {
       .status(201)
       .send({ message: "User created successfully", data: userData });
   } catch (error) {
-    res.status(400).send("ERROR: " + error.message);
+    res.status(400).send({ message: "ERROR: " + error.message });
   }
 });
 
@@ -76,7 +76,7 @@ router.post("/login", async (req, res) => {
       .status(200)
       .send({ message: "Login successful" });
   } catch (error) {
-    res.status(400).send("ERROR: " + error?.message);
+    res.status(400).send({ message: "ERROR: " + error.message });
   }
 });
 
