@@ -19,9 +19,11 @@ router.get("/view", userAuth, async (req, res) => {
   try {
     const user = req.user;
 
-    res.status(200).send({ message: "Profile fetched successfully", user });
+    res
+      .status(200)
+      .send({ message: "Profile fetched successfully", data: user });
   } catch (error) {
-    res.status(400).send("ERROR: " + error?.message);
+    res.status(400).send({ message: "ERROR: " + error.message });
   }
 });
 
@@ -41,9 +43,9 @@ router.patch("/edit", userAuth, async (req, res) => {
 
     res
       .status(200)
-      .send({ message: "Profile updated successfully", user: loggedInUser });
+      .send({ message: "Profile updated successfully", data: loggedInUser });
   } catch (error) {
-    res.status(400).send("ERROR: " + error?.message);
+    res.status(400).send({ message: "ERROR: " + error.message });
   }
 });
 
@@ -73,7 +75,7 @@ router.patch("/password", userAuth, async (req, res) => {
 
     res.send({ message: "Password updated successfully" });
   } catch (error) {
-    res.status(400).send("ERROR: " + error?.message);
+    res.status(400).send({ message: "ERROR: " + error.message });
   }
 });
 

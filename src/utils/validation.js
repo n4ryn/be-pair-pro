@@ -68,9 +68,24 @@ const validatePasswordEditData = (req) => {
   }
 };
 
+// Validate sent connection request data
+const validateSentConnectionRequest = (req) => {
+  const toUserId = req.params.toUserId;
+  const status = req.params.status;
+  const allowedStatus = ["interested", "ignore"];
+
+  // Validate data
+  if (!allowedStatus.includes(status)) {
+    throw new Error("Invalid request status type");
+  } else if (!validator.isMongoId(toUserId)) {
+    throw new Error("Invalid to user id");
+  }
+};
+
 module.exports = {
   validateSignupData,
   validateLoginData,
   validateProfileEditData,
   validatePasswordEditData,
+  validateSentConnectionRequest,
 };
