@@ -36,11 +36,16 @@ router.post("/signup", async (req, res) => {
     // Save the user
     const userData = await user.save();
 
-    res
-      .status(201)
-      .send({ message: "User created successfully", data: userData });
+    res.status(201).send({
+      status: "success",
+      message: "User created successfully",
+      data: userData,
+    });
   } catch (error) {
-    res.status(400).send({ message: "ERROR: " + error.message });
+    res.status(400).send({
+      status: "error",
+      message: error.message || "Something went wrong",
+    });
   }
 });
 
@@ -74,18 +79,25 @@ router.post("/login", async (req, res) => {
         expires: new Date(Date.now() + 7 * 24 * 3600000),
       })
       .status(200)
-      .send({ message: "Login successful" });
+      .send({
+        status: "success",
+        message: "Login successful",
+      });
   } catch (error) {
-    res.status(400).send({ message: "ERROR: " + error.message });
+    res.status(400).send({
+      status: "error",
+      message: error.message || "Something went wrong",
+    });
   }
 });
 
 // Logout user session
 router.post("/logout", async (req, res) => {
   // Invalidate token and expire cookie
-  res
-    .cookie("token", null, { expires: new Date(Date.now()) })
-    .send({ message: "Logout successfully" });
+  res.cookie("token", null, { expires: new Date(Date.now()) }).send({
+    status: "success",
+    message: "Logout successfully",
+  });
 });
 
 module.exports = router;

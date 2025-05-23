@@ -19,11 +19,16 @@ router.get("/view", userAuth, async (req, res) => {
   try {
     const user = req.user;
 
-    res
-      .status(200)
-      .send({ message: "Profile fetched successfully", data: user });
+    res.status(200).send({
+      status: "success",
+      message: "Profile fetched successfully",
+      data: user,
+    });
   } catch (error) {
-    res.status(400).send({ message: "ERROR: " + error.message });
+    res.status(400).send({
+      status: "error",
+      message: error.message || "Something went wrong",
+    });
   }
 });
 
@@ -41,11 +46,16 @@ router.patch("/edit", userAuth, async (req, res) => {
     // Save the updated user
     await loggedInUser.save();
 
-    res
-      .status(200)
-      .send({ message: "Profile updated successfully", data: loggedInUser });
+    res.status(200).send({
+      status: "success",
+      message: "Profile updated successfully",
+      data: loggedInUser,
+    });
   } catch (error) {
-    res.status(400).send({ message: "ERROR: " + error.message });
+    res.status(400).send({
+      status: "error",
+      message: error.message || "Something went wrong",
+    });
   }
 });
 
@@ -73,9 +83,14 @@ router.patch("/password", userAuth, async (req, res) => {
     // Save the updated user
     user.save();
 
-    res.send({ message: "Password updated successfully" });
+    res
+      .status(200)
+      .send({ status: "success", message: "Password updated successfully" });
   } catch (error) {
-    res.status(400).send({ message: "ERROR: " + error.message });
+    res.status(400).send({
+      status: "error",
+      message: error.message || "Something went wrong",
+    });
   }
 });
 
