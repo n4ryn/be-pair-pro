@@ -1,7 +1,11 @@
 const express = require("express");
+const bcrypt = require("bcrypt");
+
 const connectDB = require("./config/database");
 
 const User = require("./models/user");
+
+const { validateSignupData, validateLoginData } = require("./utils/validation");
 
 const app = express();
 
@@ -12,14 +16,51 @@ app.use(express.json());
 // Create a new user
 app.post("/signup", async (req, res) => {
   try {
-    // Creating a new Instance of the User Model
-    const user = new User(req.body);
+    // Validation of data
+    validateSignupData(req);
+
+    const { firstName, lastName, emailId, password } = req.body;
+
+    // Encrypt the password
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    const user = new User({
+      firstName,
+      lastName,
+      emailId,
+      password: passwordHash,
+    });
 
     const userData = await user.save();
 
     res.status(201).send(userData);
   } catch (error) {
-    res.status(500).send(error?.message || "Something went wrong");
+    res.status(400).send("ERROR: " + error.message);
+  }
+});
+
+// User Login
+app.post("/login", async (req, res) => {
+  try {
+    validateLoginData(req);
+
+    const { emailId, password } = req.body;
+
+    const user = await User.findOne({ emailId });
+
+    if (!user) {
+      throw new Error("User not found with Email ID");
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      throw new Error("Password does not match");
+    }
+
+    res.status(200).send("Login successful");
+  } catch (error) {
+    res.status(400).send("ERROR: " + error?.message);
   }
 });
 
@@ -36,7 +77,7 @@ app.get("/user", async (req, res) => {
       res.status(200).send(user);
     }
   } catch (error) {
-    res.status(500).send(error?.message || "Something went wrong");
+    res.status(400).send("ERROR: " + error?.message);
   }
 });
 
@@ -67,7 +108,7 @@ app.patch("/user/:userId", async (req, res) => {
 
     res.status(200).send(user);
   } catch (error) {
-    res.status(500).send(error?.message || "Something went wrong");
+    res.status(400).send("ERROR: " + error?.message);
   }
 });
 
@@ -80,7 +121,7 @@ app.delete("/user/:userId", async (req, res) => {
 
     res.status(200).send(user);
   } catch (error) {
-    res.status(500).send(error?.message || "Something went wrong");
+    res.status(400).send("ERROR: " + error?.message);
   }
 });
 
@@ -91,7 +132,7 @@ app.get("/feed", async (req, res) => {
 
     res.status(200).send(users);
   } catch (error) {
-    res.status(500).send(error?.message || "Something went wrong");
+    res.status(400).send("ERROR: " + error?.message);
   }
 });
 
