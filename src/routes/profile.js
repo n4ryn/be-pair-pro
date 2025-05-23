@@ -15,6 +15,69 @@ const {
 const router = express.Router();
 
 // Get User Profile
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     cookieAuth:
+ *       type: apiKey
+ *       in: cookie
+ *       name: token
+ *
+ * /profile/view:
+ *   get:
+ *     summary: Get user profile
+ *     description: Retrieves the profile details of the authenticated user.
+ *     tags: [Profile]
+ *     security:
+ *       - cookieAuth: []
+ *     responses:
+ *       200:
+ *         description: Profile fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 message:
+ *                   type: string
+ *                   example: Profile fetched successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                       example: 60f6c8b2e1d2f74a4c4f1c12
+ *                     firstName:
+ *                       type: string
+ *                       example: John
+ *                     lastName:
+ *                       type: string
+ *                       example: Doe
+ *                     emailId:
+ *                       type: string
+ *                       example: john.doe@email.com
+ *                     age:
+ *                       type: number
+ *                       example: 25
+ *                     gender:
+ *                       type: string
+ *                       example: male
+ *                     photoUrl:
+ *                       type: string
+ *                       example: https://geographyandyou.com/images/user-profile.png
+ *                     about:
+ *                       type: string
+ *                       example: This is a default about of user
+ *                     skills:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *                       example: [Javascript, React, Nodejs]
+ */
 router.get("/view", userAuth, async (req, res) => {
   try {
     const user = req.user;
@@ -33,6 +96,105 @@ router.get("/view", userAuth, async (req, res) => {
 });
 
 // Update User
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     cookieAuth:
+ *       type: apiKey
+ *       in: cookie
+ *       name: token
+ *
+ * /profile/edit:
+ *   patch:
+ *     summary: Edit user profile
+ *     description: Allows the authenticated user to update their profile information.
+ *     tags: [Profile]
+ *     security:
+ *       - cookieAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               firstName:
+ *                 type: string
+ *                 example: John
+ *               lastName:
+ *                 type: string
+ *                 example: Doe
+ *               emailId:
+ *                 type: string
+ *                 format: email
+ *                 example: john.doe@email.com
+ *               age:
+ *                 type: number
+ *                 example: 25
+ *               gender:
+ *                 type: string
+ *                 enum: [male, female, other]
+ *                 example: male
+ *               photoUrl:
+ *                 type: string
+ *                 format: url
+ *                 example: https://geographyandyou.com/images/user-profile.png
+ *               about:
+ *                 type: string
+ *                 example: This is a default about of user
+ *               skills:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 example: [Javascript, React, Nodejs]
+ *     responses:
+ *       200:
+ *         description: Profile updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 message:
+ *                   type: string
+ *                   example: Profile updated successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                       example: 64f9cd7f6f88a7b7890a2b45
+ *                     firstName:
+ *                       type: string
+ *                       example: John
+ *                     lastName:
+ *                       type: string
+ *                       example: Doe
+ *                     emailId:
+ *                       type: string
+ *                       example: john.doe@email.com
+ *                     age:
+ *                       type: number
+ *                       example: 25
+ *                     gender:
+ *                       type: string
+ *                       example: male
+ *                     photoUrl:
+ *                       type: string
+ *                       example: https://geographyandyou.com/images/user-profile.png
+ *                     about:
+ *                       type: string
+ *                       example: This is a default about of user
+ *                     skills:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *                       example: [Javascript, React, Nodejs]
+ */
 router.patch("/edit", userAuth, async (req, res) => {
   try {
     // Validation of data
@@ -60,6 +222,55 @@ router.patch("/edit", userAuth, async (req, res) => {
 });
 
 // Update User Password
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     cookieAuth:
+ *       type: apiKey
+ *       in: cookie
+ *       name: token
+ *
+ * /profile/password:
+ *   patch:
+ *     summary: Change user password
+ *     description: Allows the authenticated user to change their password.
+ *     tags: [Profile]
+ *     security:
+ *       - cookieAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - oldPassword
+ *               - newPassword
+ *             properties:
+ *               oldPassword:
+ *                 type: string
+ *                 format: password
+ *                 example: Password@123
+ *               newPassword:
+ *                 type: string
+ *                 format: password
+ *                 example: NewPassword@123
+ *     responses:
+ *       200:
+ *         description: Password updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 message:
+ *                   type: string
+ *                   example: Password updated successfully
+ */
 router.patch("/password", userAuth, async (req, res) => {
   try {
     // Validation of data

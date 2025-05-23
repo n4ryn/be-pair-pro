@@ -3,6 +3,7 @@ const cookieParser = require("cookie-parser");
 
 // Config
 const connectDB = require("./config/database");
+const setupSwaggerDocs = require("./config/swagger");
 require("dotenv").config();
 
 // Routes
@@ -17,6 +18,7 @@ const port = process.env.PORT;
 // Middleware
 app.use(express.json());
 app.use(cookieParser());
+setupSwaggerDocs(app);
 
 // Routes
 app.use("/profile", profileRouter);

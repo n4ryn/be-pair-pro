@@ -18,6 +18,66 @@ const {
 const router = express.Router();
 
 // Send Connection Request
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     cookieAuth:
+ *       type: apiKey
+ *       in: cookie
+ *       name: token
+ *
+ * /request/send/{status}/{toUserId}:
+ *   post:
+ *     summary: Send a connection request
+ *     description: Sends a connection request from the authenticated user to another user.
+ *     tags: [Request]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: status
+ *         required: true
+ *         schema:
+ *           type: string
+ *           enum: [interested, ignore]
+ *           example: interested
+ *       - in: path
+ *         name: toUserId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: 64f9bdf36f88a7b7890a2b32
+ *     responses:
+ *       200:
+ *         description: Connection request sent successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 message:
+ *                   type: string
+ *                   example: Connection request sent successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                       example: 64f9cd7f6f88a7b7890a2b45
+ *                     fromUserId:
+ *                       type: string
+ *                       example: 64f9cd7f6f88a7b7890a2b45
+ *                     toUserId:
+ *                       type: string
+ *                       example: 64f9cd7f6f88a7b7890a2b45
+ *                     status:
+ *                       type: string
+ *                       example: interested
+ */
 router.post("/send/:status/:toUserId", userAuth, async (req, res) => {
   try {
     // Validation of data
@@ -67,6 +127,66 @@ router.post("/send/:status/:toUserId", userAuth, async (req, res) => {
 });
 
 // Review Connection Request
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     cookieAuth:
+ *       type: apiKey
+ *       in: cookie
+ *       name: token
+ *
+ * /request/review/{status}/{requestId}:
+ *   post:
+ *     summary: Review a connection request
+ *     description: Allows a user to review and update the status of a received connection request.
+ *     tags: [Request]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: status
+ *         required: true
+ *         schema:
+ *           type: string
+ *           enum: [accepted, rejected]
+ *           example: accepted
+ *       - in: path
+ *         name: requestId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: 64f9cd7f6f88a7b7890a2b45
+ *     responses:
+ *       200:
+ *         description: Connection request reviewed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 message:
+ *                   type: string
+ *                   example: Connection request sent successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                       example: 64f9cd7f6f88a7b7890a2b45
+ *                     fromUserId:
+ *                       type: string
+ *                       example: 64f9cd7f6f88a7b7890a2b45
+ *                     toUserId:
+ *                       type: string
+ *                       example: 64f9cd7f6f88a7b7890a2b45
+ *                     status:
+ *                       type: string
+ *                       example: accepted
+ */
 router.post("/review/:status/:requestId", userAuth, async (req, res) => {
   try {
     // Validation of data
