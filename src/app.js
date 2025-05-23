@@ -19,8 +19,7 @@ app.post("/signup", async (req, res) => {
 
     res.status(201).send(userData);
   } catch (error) {
-    console.log(error);
-    res.status(500).send("Something went wrong");
+    res.status(500).send(error?.message || "Something went wrong");
   }
 });
 
@@ -37,36 +36,51 @@ app.get("/user", async (req, res) => {
       res.status(200).send(user);
     }
   } catch (error) {
-    res.status(500).send("Something went wrong");
+    res.status(500).send(error?.message || "Something went wrong");
   }
 });
 
 // Update user details
-app.patch("/user", async (req, res) => {
+app.patch("/user/:userId", async (req, res) => {
   try {
-    const userId = req.body.userId;
+    const userId = req.params?.userId;
     const data = req.body;
+
+    const ALLOWED_UPDATES = ["photoUrl", "about", "gender", "age", "skills"];
+
+    const isUpdateAllowed = Object.keys(data).every((k) =>
+      ALLOWED_UPDATES.includes(k)
+    );
+
+    if (!isUpdateAllowed) {
+      throw new Error("Update not allowed");
+    }
+
+    if (data.skills.length > 10) {
+      throw new Error("Skills cannot be more than 10 skills");
+    }
 
     const user = await User.findByIdAndUpdate({ _id: userId }, data, {
       returnDocument: "after",
+      runValidators: true,
     });
 
     res.status(200).send(user);
   } catch (error) {
-    res.status(500).send("Something went wrong");
+    res.status(500).send(error?.message || "Something went wrong");
   }
 });
 
 // Delete User
-app.delete("/user", async (req, res) => {
+app.delete("/user/:userId", async (req, res) => {
   try {
-    const userId = req.body.userId;
+    const userId = req.params?.userId;
 
     const user = await User.findByIdAndDelete({ _id: userId });
 
     res.status(200).send(user);
   } catch (error) {
-    res.status(500).send("Something went wrong");
+    res.status(500).send(error?.message || "Something went wrong");
   }
 });
 
@@ -77,7 +91,7 @@ app.get("/feed", async (req, res) => {
 
     res.status(200).send(users);
   } catch (error) {
-    res.status(500).send("Something went wrong");
+    res.status(500).send(error?.message || "Something went wrong");
   }
 });
 
