@@ -7,20 +7,78 @@ const app = express();
 
 port = process.env.PORT || 9000;
 
+app.use(express.json());
+
+// Create a new user
 app.post("/signup", async (req, res) => {
-  const userObj = {
-    firstName: "Vinay",
-    lastName: "Kumar",
-    emailId: "vinay@email.com",
-    password: "test@123",
-  };
+  try {
+    // Creating a new Instance of the User Model
+    const user = new User(req.body);
 
-  // Creating a new Instance of the User Model
-  const user = new User(userObj);
+    const userData = await user.save();
 
-  const userData = await user.save();
+    res.status(201).send(userData);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Something went wrong");
+  }
+});
 
-  res.status(201).send(userData);
+// Get user details
+app.get("/user", async (req, res) => {
+  try {
+    const userEmail = req.body.emailId;
+
+    const user = await User.findOne({ emailId: userEmail });
+
+    if (!user) {
+      res.status(404).send("User not found");
+    } else {
+      res.status(200).send(user);
+    }
+  } catch (error) {
+    res.status(500).send("Something went wrong");
+  }
+});
+
+// Update user details
+app.patch("/user", async (req, res) => {
+  try {
+    const userId = req.body.userId;
+    const data = req.body;
+
+    const user = await User.findByIdAndUpdate({ _id: userId }, data, {
+      returnDocument: "after",
+    });
+
+    res.status(200).send(user);
+  } catch (error) {
+    res.status(500).send("Something went wrong");
+  }
+});
+
+// Delete User
+app.delete("/user", async (req, res) => {
+  try {
+    const userId = req.body.userId;
+
+    const user = await User.findByIdAndDelete({ _id: userId });
+
+    res.status(200).send(user);
+  } catch (error) {
+    res.status(500).send("Something went wrong");
+  }
+});
+
+// Get Feed
+app.get("/feed", async (req, res) => {
+  try {
+    const users = await User.find({});
+
+    res.status(200).send(users);
+  } catch (error) {
+    res.status(500).send("Something went wrong");
+  }
 });
 
 connectDB()
