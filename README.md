@@ -1,6 +1,6 @@
 # PairPro
 
-![PairPro](./src/public/apis.png)
+![PairPro](./src/public/project.png)
 
 ## Description
 
