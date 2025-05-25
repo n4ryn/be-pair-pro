@@ -117,11 +117,19 @@ router.post("/signup", async (req, res) => {
     // Save the user
     const userData = await user.save();
 
-    res.status(201).send({
-      status: "success",
-      message: "User created successfully",
-      data: userData,
-    });
+    // Generate JWT token
+    const token = await user.getJWT();
+
+    res
+      .cookie("token", token, {
+        expires: new Date(Date.now() + 7 * 24 * 3600000),
+      })
+      .status(201)
+      .send({
+        status: "success",
+        message: "User created successfully",
+        data: { token, user: userData },
+      });
   } catch (error) {
     res.status(400).send({
       status: "error",
@@ -208,7 +216,7 @@ router.post("/login", async (req, res) => {
       .send({
         status: "success",
         message: "Login successful",
-        data: { token },
+        data: { token, user },
       });
   } catch (error) {
     res.status(400).send({

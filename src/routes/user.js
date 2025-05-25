@@ -84,7 +84,7 @@ const router = express.Router();
  *                       status:
  *                         type: string
  *                         example: interested
- *                         enum: [interested, ignore]
+ *                         enum: [interested, ignored]
  */
 router.get("/requests", userAuth, async (req, res) => {
   try {

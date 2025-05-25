@@ -40,7 +40,7 @@ const router = express.Router();
  *         required: true
  *         schema:
  *           type: string
- *           enum: [interested, ignore]
+ *           enum: [interested, ignored]
  *           example: interested
  *       - in: path
  *         name: toUserId

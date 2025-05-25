@@ -72,7 +72,7 @@ const validatePasswordEditData = (req) => {
 const validateSendConnectionRequest = (req) => {
   const toUserId = req.params.toUserId;
   const status = req.params.status;
-  const allowedStatus = ["interested", "ignore"];
+  const allowedStatus = ["interested", "ignored"];
 
   // Validate data
   if (!allowedStatus.includes(status)) {

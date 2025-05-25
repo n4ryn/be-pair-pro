@@ -47,7 +47,8 @@ const userSchema = new mongoose.Schema(
     },
     photoUrl: {
       type: String,
-      default: "https://geographyandyou.com/images/user-profile.png",
+      default:
+        "https://easy-peasy.ai/cdn-cgi/image/quality=80,format=auto,width=400/https://media.easy-peasy.ai/73d73edb-aa3c-4fe4-a664-65219f30178e/4f912e5f-d74d-4157-8e91-87b555ec25e1.png",
       validate(value) {
         if (!validator.isURL(value)) {
           throw new Error("Enter a valid URL: ", value);

@@ -1,5 +1,6 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
 
 // Config
 const connectDB = require("./config/database");
@@ -18,6 +19,12 @@ const port = process.env.PORT;
 // Middleware
 app.use(express.json());
 app.use(cookieParser());
+app.use(
+  cors({
+    origin: process.env.FE_BASE_URL,
+    credentials: true,
+  })
+);
 setupSwaggerDocs(app);
 
 // Routes
