@@ -1,10 +1,10 @@
-# DevTinder
+# PairPro
 
-![DevTinder](./src/public/apis.png)
+![PairPro](./src/public/apis.png)
 
 ## Description
 
-DevTinder is a social networking platform that allows users to connect with each other based on mutual interests. It provides a platform for users to showcase their skills, interests, and hobbies, and connect with others who share similar interests.
+PairPro is a web application that allows users to connect with each other based on their interests and skills. It provides a platform for users to find and connect with others who share similar interests and skills.
 
 ## Features
 
@@ -23,6 +23,9 @@ DevTinder is a social networking platform that allows users to connect with each
 
 ## Installation
 
+To get started with PairPro, follow these steps:
+
 1. Clone the repository
 2. Install dependencies
-3. Run the application
+3. Create a .env file and add the necessary environment variables
+4. Run the application

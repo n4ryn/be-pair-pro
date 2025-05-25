@@ -7,9 +7,9 @@ const options = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "DevTinder API",
+      title: "PairPro API",
       version: "1.0.0",
-      description: "REST apis for DevTinder backend",
+      description: "REST apis for PairPro backend",
     },
   },
   components: {

@@ -1,4 +1,4 @@
-# DevTinder APIs
+# PairPro APIs
 
 ### authRouter
 
