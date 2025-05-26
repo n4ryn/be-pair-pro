@@ -382,7 +382,7 @@ router.patch("/photo", userAuth, upload.single("photo"), async (req, res) => {
 
     // Update user photoUrl
     if (uploadResult.url) {
-      user.photoUrl = uploadResult.url;
+      user.photoUrl = uploadResult.secure_url;
       await user.save();
     }
 

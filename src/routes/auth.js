@@ -120,6 +120,9 @@ router.post("/signup", async (req, res) => {
     // Generate JWT token
     const token = await user.getJWT();
 
+    const userWithoutPassword = userData.toJSON();
+    delete userWithoutPassword.password;
+
     res
       .cookie("token", token, {
         expires: new Date(Date.now() + 7 * 24 * 3600000),
@@ -128,7 +131,7 @@ router.post("/signup", async (req, res) => {
       .send({
         status: "success",
         message: "User created successfully",
-        data: { token, user: userData },
+        data: { token, user: userWithoutPassword },
       });
   } catch (error) {
     res.status(400).send({
@@ -208,6 +211,9 @@ router.post("/login", async (req, res) => {
     // Generate JWT token
     const token = await user.getJWT();
 
+    const userWithoutPassword = user.toJSON();
+    delete userWithoutPassword.password;
+
     res
       .cookie("token", token, {
         expires: new Date(Date.now() + 7 * 24 * 3600000),
@@ -216,7 +222,7 @@ router.post("/login", async (req, res) => {
       .send({
         status: "success",
         message: "Login successful",
-        data: { token, user },
+        data: { token, user: userWithoutPassword },
       });
   } catch (error) {
     res.status(400).send({

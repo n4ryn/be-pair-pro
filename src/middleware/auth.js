@@ -12,12 +12,14 @@ const userAuth = async (req, res, next) => {
         .send({ status: "error", message: "Invalid token" });
     }
 
+    const passwordSelect = !req.url.includes("password") ? "-password" : "";
+
     // Decoding token
     const decodedMessage = await jwt.verify(token, process.env.JWT_SECRET);
     const { _id } = decodedMessage;
 
     // Fetching user with id
-    const user = await User.findById(_id);
+    const user = await User.findById(_id).select(passwordSelect);
     if (!user) {
       throw new Error("User not found");
     }
