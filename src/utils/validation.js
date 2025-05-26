@@ -32,7 +32,6 @@ const validateProfileEditData = (req) => {
     "firstName",
     "lastName",
     "emailId",
-    "photoUrl",
     "gender",
     "age",
     "about",
@@ -109,6 +108,25 @@ const validateFeedData = (req) => {
   }
 };
 
+const validateFileType = (req) => {
+  // Check if file is present
+  if (!req.file) {
+    throw new Error("File is not present");
+  }
+
+  const allowedFileTypes = ["image/jpeg", "image/png", "image/jpg"];
+
+  // check file size greater than 5MB
+  if (req.file.size > 1024 * 1024 * 5) {
+    throw new Error("File size is too large");
+  }
+
+  // Validate data
+  if (!allowedFileTypes.includes(req.file.mimetype)) {
+    throw new Error("File type is not valid");
+  }
+};
+
 module.exports = {
   validateSignupData,
   validateLoginData,
@@ -117,4 +135,5 @@ module.exports = {
   validateSendConnectionRequest,
   validateReviewConnectionRequest,
   validateFeedData,
+  validateFileType,
 };

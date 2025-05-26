@@ -1,5 +1,7 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
+const multer = require("multer");
+const { v2: cloudinary } = require("cloudinary");
 
 // Middleware
 const { userAuth } = require("../middleware/auth");
@@ -8,7 +10,11 @@ const { userAuth } = require("../middleware/auth");
 const {
   validateProfileEditData,
   validatePasswordEditData,
+  validateFileType,
 } = require("../utils/validation");
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 // ------------------------ Routes ------------------------ //
 
@@ -136,10 +142,6 @@ router.get("/view", userAuth, async (req, res) => {
  *                 type: string
  *                 enum: [male, female, other]
  *                 example: male
- *               photoUrl:
- *                 type: string
- *                 format: url
- *                 example: https://geographyandyou.com/images/user-profile.png
  *               about:
  *                 type: string
  *                 example: This is a default about of user
@@ -183,9 +185,6 @@ router.get("/view", userAuth, async (req, res) => {
  *                     gender:
  *                       type: string
  *                       example: male
- *                     photoUrl:
- *                       type: string
- *                       example: https://geographyandyou.com/images/user-profile.png
  *                     about:
  *                       type: string
  *                       example: This is a default about of user
@@ -297,6 +296,105 @@ router.patch("/password", userAuth, async (req, res) => {
     res
       .status(200)
       .send({ status: "success", message: "Password updated successfully" });
+  } catch (error) {
+    res.status(400).send({
+      status: "error",
+      message: error.message || "Something went wrong",
+    });
+  }
+});
+
+// File upload
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     cookieAuth:
+ *       type: apiKey
+ *       in: cookie
+ *       name: token
+ *
+ * /profile/photo:
+ *   patch:
+ *     summary: Upload user profile photo
+ *     description: Allows the authenticated user to upload a profile photo.
+ *     tags: [Profile]
+ *     security:
+ *       - cookieAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - photo
+ *             properties:
+ *               photo:
+ *                 type: string
+ *                 format: binary
+ *                 example: iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAACXZwQWcAAAA8AAAAHgD...w==
+ *     responses:
+ *       200:
+ *         description: Photo uploaded successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 message:
+ *                   type: string
+ *                   example: Photo uploaded successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     url:
+ *                       type: string
+ *                       example: https://res.cloudinary.com/demo/image/upload/v1662088800/shoes.jpg
+ *                     secureUrl:
+ *                       type: string
+ *                       example: https://res.cloudinary.com/demo/image/upload/v1662088800/shoes.jpg
+ *                     display_name:
+ *                       type: string
+ *                       example: IMG-20221207-WA0013
+ */
+router.patch("/photo", userAuth, upload.single("photo"), async (req, res) => {
+  try {
+    validateFileType(req);
+
+    const user = req.user;
+
+    // Access the file buffer
+    const fileBuffer = req.file.buffer;
+
+    // Convert buffer to base64 for Cloudinary
+    const fileBase64 = `data:${req.file.mimetype};base64,${fileBuffer.toString(
+      "base64"
+    )}`;
+
+    // Upload to Cloudinary
+    const uploadResult = await cloudinary.uploader.upload(fileBase64, {
+      public_id: `IMG-${new Date().toISOString()}`.substring(0, 23),
+    });
+
+    // Update user photoUrl
+    if (uploadResult.url) {
+      user.photoUrl = uploadResult.url;
+      await user.save();
+    }
+
+    res.send({
+      status: "success",
+      message: "File uploaded successfully",
+      data: {
+        url: uploadResult.url,
+        secureUrl: uploadResult.secure_url,
+        display_name: uploadResult.public_id,
+      },
+    });
   } catch (error) {
     res.status(400).send({
       status: "error",

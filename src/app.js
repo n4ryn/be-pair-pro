@@ -1,11 +1,20 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const { v2: cloudinary } = require("cloudinary");
 
 // Config
 const connectDB = require("./config/database");
 const setupSwaggerDocs = require("./config/swagger");
 require("dotenv").config();
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true,
+  private_cdn: true,
+});
 
 // Routes
 const authRouter = require("./routes/auth");
