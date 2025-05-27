@@ -12,6 +12,7 @@ const {
   validateSendConnectionRequest,
   validateReviewConnectionRequest,
 } = require("../utils/validation");
+const sendEmail = require("../utils/sendEmail");
 
 // ------------------------ Routes ------------------------ //
 
@@ -112,6 +113,15 @@ router.post("/send/:status/:toUserId", userAuth, async (req, res) => {
 
     // Save the connection request
     const data = await connectionRequest.save();
+
+    if (status === "interested") {
+      // Send email to the toUser
+      const subject = "You have a new connection request 🙌";
+      const emailBody = `Hi ${toUserExists.firstName}, you have a new connection request from ${req.user.firstName} ${req.user.lastName}.`;
+
+      const emailRes = await sendEmail.run(subject, emailBody);
+      console.log(emailRes);
+    }
 
     res.status(200).send({
       status: "success",

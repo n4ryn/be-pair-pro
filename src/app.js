@@ -7,6 +7,7 @@ const { v2: cloudinary } = require("cloudinary");
 const connectDB = require("./config/database");
 const setupSwaggerDocs = require("./config/swagger");
 require("dotenv").config();
+require("./utils/cronjob");
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
