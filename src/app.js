@@ -1,3 +1,4 @@
+const { createServer } = require("http");
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
@@ -8,6 +9,7 @@ const connectDB = require("./config/database");
 const setupSwaggerDocs = require("./config/swagger");
 require("dotenv").config();
 require("./utils/cronjob");
+const initializeSocket = require("./utils/socket");
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -22,9 +24,14 @@ const authRouter = require("./routes/auth");
 const profileRouter = require("./routes/profile");
 const requestRouter = require("./routes/request");
 const userRouter = require("./routes/user");
+const chatRouter = require("./routes/chat");
 
 const app = express();
 const port = process.env.PORT;
+
+// Socket
+const server = createServer(app);
+initializeSocket(server);
 
 // Middleware
 app.use(express.json({ limit: "5mb" }));
@@ -39,6 +46,7 @@ app.use(
 setupSwaggerDocs(app);
 
 // Routes
+app.use("/chat", chatRouter);
 app.use("/profile", profileRouter);
 app.use("/request", requestRouter);
 app.use("/user", userRouter);
@@ -49,7 +57,7 @@ connectDB()
   .then(() => {
     console.log("Database connected successfully.");
 
-    app.listen(port, () => {
+    server.listen(port, () => {
       console.log("Server is listening on PORT:", port);
     });
   })
