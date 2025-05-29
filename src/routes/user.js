@@ -9,6 +9,7 @@ const { userAuth } = require("../middleware/auth");
 
 // Utils
 const { validateFeedData } = require("../utils/validation");
+const { default: mongoose } = require("mongoose");
 const USER_SAFE_DATA = "firstName lastName photoUrl age gender about skills";
 
 // ------------------------ Routes ------------------------ //
@@ -291,7 +292,7 @@ router.get("/feed", userAuth, async (req, res) => {
     const loggedInUser = req.user;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
-    const skip = (page - 1) * limit;
+    const ignored = req.query["ignored[]"];
 
     // Get all connection requests
     const connectionRequests = await ConnectionRequest.find({
@@ -307,21 +308,35 @@ router.get("/feed", userAuth, async (req, res) => {
       hiddenUserFromFeed.add(field.toUserId.toString());
     });
 
+    // Add loggedInUser to hiddenUserFromFeed
+    hiddenUserFromFeed.add(loggedInUser._id.toString());
+    if (ignored) {
+      ignored.forEach((userId) => {
+        hiddenUserFromFeed.add(userId);
+      });
+    }
+
+    // Convert hiddenUserFromFeed to mongoose ObjectId
+    const hiddenUserIds = Array.from(hiddenUserFromFeed).map(
+      (id) => new mongoose.Types.ObjectId(id)
+    );
+
     // Get all users from feed excluding hidden users
-    const users = await User.find({
-      $and: [
-        { _id: { $nin: Array.from(hiddenUserFromFeed) } },
-        { _id: { $ne: loggedInUser._id } },
-      ],
-    })
-      .select(USER_SAFE_DATA)
-      .skip(skip)
-      .limit(limit);
+    const users = await User.aggregate([
+      { $match: { _id: { $nin: hiddenUserIds } } },
+      { $sort: { _id: 1 } },
+      { $limit: limit },
+    ]);
+
+    // Get total count of users
+    const totalRecords = await User.countDocuments({
+      _id: { $nin: hiddenUserIds },
+    });
 
     res.status(200).send({
       status: "success",
       message: "Feed fetched successfully",
-      data: users,
+      data: { users, page, limit, totalRecords },
     });
   } catch (error) {
     res.status(400).send({
