@@ -25,6 +25,7 @@ const profileRouter = require("./routes/profile");
 const requestRouter = require("./routes/request");
 const userRouter = require("./routes/user");
 const chatRouter = require("./routes/chat");
+const paymentRouter = require("./routes/payment");
 
 const app = express();
 const port = process.env.PORT;
@@ -50,6 +51,7 @@ app.use("/chat", chatRouter);
 app.use("/profile", profileRouter);
 app.use("/request", requestRouter);
 app.use("/user", userRouter);
+app.use("/payment", paymentRouter);
 app.use("/", authRouter);
 
 // Connect to database and start server
