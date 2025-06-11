@@ -176,8 +176,12 @@ router.get("/requests", userAuth, async (req, res) => {
 router.get("/connections", userAuth, async (req, res) => {
   try {
     const loggedInUser = req.user;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const search = req.query.search;
+    const skip = (page - 1) * limit;
 
-    // Get all connection
+    // Get all connection with search and pagination
     const connections = await ConnectionRequest.find({
       $or: [
         { fromUserId: loggedInUser._id, status: "accepted" },
@@ -185,7 +189,9 @@ router.get("/connections", userAuth, async (req, res) => {
       ],
     })
       .populate("fromUserId", USER_SAFE_DATA)
-      .populate("toUserId", USER_SAFE_DATA);
+      .populate("toUserId", USER_SAFE_DATA)
+      .skip(skip)
+      .limit(limit);
 
     // Remove fromUserId from connections if it is same as loggedInUser
     const data = connections.map((row) => {
@@ -238,6 +244,14 @@ router.get("/connections", userAuth, async (req, res) => {
  *           type: integer
  *           default: 10
  *         description: Number of users to return per page (default is 10)
+ *       - in: query
+ *         name: ignored[]
+ *         schema:
+ *           type: array
+ *           items:
+ *             type: string
+ *             example: 64f9cd7f6f88a7b7890a2b45
+ *         description: Array of user ids to ignore
  *     responses:
  *       200:
  *         description: Feed fetched successfully
