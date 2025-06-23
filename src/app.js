@@ -28,7 +28,7 @@ const chatRouter = require("./routes/chat");
 const paymentRouter = require("./routes/payment");
 
 const app = express();
-const port = process.env.PORT;
+const port = process.env.PORT || 9000;
 
 // Socket
 const server = createServer(app);

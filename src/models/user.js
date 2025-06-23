@@ -79,7 +79,7 @@ userSchema.methods.getJWT = async function () {
   const user = this;
 
   const token = await jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
-    expiresIn: "7d",
+    expiresIn: "1d",
   });
 
   return token;
@@ -92,5 +92,12 @@ userSchema.methods.validatePassword = async function (userPassword) {
 
   return isPasswordValid;
 };
+
+userSchema.set("toJSON", {
+  transform(document, returnedObject) {
+    delete returnedObject.password;
+    return returnedObject;
+  },
+});
 
 module.exports = mongoose.model("User", userSchema);

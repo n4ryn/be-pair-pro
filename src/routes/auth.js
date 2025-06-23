@@ -9,6 +9,9 @@ const {
   validateLoginData,
   validateSignupData,
 } = require("../utils/validation");
+const sendResponse = require("../utils/sendResponse");
+
+const statusCodes = require("../utils/status.json");
 
 // ------------------------ Routes ------------------------ //
 
@@ -103,6 +106,15 @@ router.post("/signup", async (req, res) => {
 
     const { firstName, lastName, emailId, password } = req.body;
 
+    const existingUser = await User.findOne({ emailId });
+
+    if (existingUser) {
+      sendResponse(res, statusCodes.HTTP_400_BAD_REQUEST, {
+        error: "User already exists",
+      });
+      return;
+    }
+
     // Encrypt the password
     const passwordHash = await bcrypt.hash(password, 10);
 
@@ -120,23 +132,18 @@ router.post("/signup", async (req, res) => {
     // Generate JWT token
     const token = await user.getJWT();
 
-    const userWithoutPassword = userData.toJSON();
-    delete userWithoutPassword.password;
+    const expires = new Date(Date.now() + 7 * 24 * 1000);
 
-    res
-      .cookie("token", token, {
-        expires: new Date(Date.now() + 7 * 24 * 3600000),
-      })
-      .status(201)
-      .send({
-        status: "success",
-        message: "User created successfully",
-        data: { token, user: userWithoutPassword },
-      });
+    sendResponse(res, statusCodes.HTTP_201_CREATED, {
+      data: { token, user: userData },
+      cookie: [
+        { type: "token", value: token, config: { expires: expires } },
+        { type: "user", value: userData, config: { expires: expires } },
+      ],
+    });
   } catch (error) {
-    res.status(400).send({
-      status: "error",
-      message: error.message || "Something went wrong",
+    sendResponse(res, statusCodes.HTTP_500_INTERNAL_SERVER_ERROR, {
+      error: error.message || "Something went wrong",
     });
   }
 });
@@ -211,23 +218,18 @@ router.post("/login", async (req, res) => {
     // Generate JWT token
     const token = await user.getJWT();
 
-    const userWithoutPassword = user.toJSON();
-    delete userWithoutPassword.password;
+    const expires = new Date(Date.now() + 7 * 24 * 1000);
 
-    res
-      .cookie("token", token, {
-        expires: new Date(Date.now() + 7 * 24 * 3600000),
-      })
-      .status(200)
-      .send({
-        status: "success",
-        message: "Login successful",
-        data: { token, user: userWithoutPassword },
-      });
+    sendResponse(res, statusCodes.HTTP_200_OK, {
+      data: { token, user: user },
+      cookie: [
+        { type: "token", value: token, config: { expires: expires } },
+        { type: "user", value: user, config: { expires: expires } },
+      ],
+    });
   } catch (error) {
-    res.status(400).send({
-      status: "error",
-      message: error.message || "Something went wrong",
+    sendResponse(res, statusCodes.HTTP_500_INTERNAL_SERVER_ERROR, {
+      error: error.message || "Something went wrong",
     });
   }
 });
@@ -270,9 +272,12 @@ router.post("/login", async (req, res) => {
  */
 router.post("/logout", async (req, res) => {
   // Invalidate token and expire cookie
-  res.cookie("token", null, { expires: new Date(Date.now()) }).send({
-    status: "success",
-    message: "Logout successfully",
+
+  sendResponse(res, statusCodes.HTTP_200_OK, {
+    cookie: [
+      { type: "token", value: null, config: { expires: new Date(Date.now()) } },
+      { type: "user", value: null, config: { expires: new Date(Date.now()) } },
+    ],
   });
 });
 

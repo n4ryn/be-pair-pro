@@ -1,0 +1,87 @@
+{
+  "HTTP_200_OK": {
+    "code": 200,
+    "status": "success",
+    "message": "OK"
+  },
+  "HTTP_201_CREATED": {
+    "code": 201,
+    "status": "success",
+    "message": "CREATED"
+  },
+  "HTTP_202_ACCEPTED": {
+    "code": 202,
+    "status": "success",
+    "message": "ACCEPTED"
+  },
+  "HTTP_204_NO_CONTENT": {
+    "code": 204,
+    "status": "success",
+    "message": "NO_CONTENT"
+  },
+  "HTTP_400_BAD_REQUEST": {
+    "code": 400,
+    "status": "error",
+    "message": "BAD_REQUEST"
+  },
+  "HTTP_401_UNAUTHORIZED": {
+    "code": 401,
+    "status": "error",
+    "message": "UNAUTHORIZED"
+  },
+  "HTTP_402_PAYMENT_REQUIRED": {
+    "code": 402,
+    "status": "error",
+    "message": "PAYMENT_REQUIRED"
+  },
+  "HTTP_403_FORBIDDEN": {
+    "code": 403,
+    "status": "error",
+    "message": "FORBIDDEN"
+  },
+  "HTTP_404_NOT_FOUND": {
+    "code": 404,
+    "status": "error",
+    "message": "NOT_FOUND"
+  },
+  "HTTP_405_METHOD_NOT_ALLOWED": {
+    "code": 405,
+    "status": "error",
+    "message": "METHOD_NOT_ALLOWED"
+  },
+  "HTTP_408_REQUEST_TIMEOUT": {
+    "code": 408,
+    "status": "error",
+    "message": "REQUEST_TIMEOUT"
+  },
+  "HTTP_409_CONFLICT": {
+    "code": 409,
+    "status": "error",
+    "message": "CONFLICT"
+  },
+  "HTTP_500_INTERNAL_SERVER_ERROR": {
+    "code": 500,
+    "status": "error",
+    "message": "INTERNAL_SERVER_ERROR"
+  },
+  "HTTP_501_NOT_IMPLEMENTED": {
+    "code": 501,
+    "status": "error",
+    "message": "NOT_IMPLEMENTED"
+  },
+  "HTTP_502_BAD_GATEWAY": {
+    "code": 502,
+    "status": "error",
+    "message": "BAD_GATEWAY"
+  },
+  "HTTP_503_SERVICE_UNAVAILABLE": {
+    "code": 503,
+    "status": "error",
+    "message": "SERVICE_UNAVAILABLE"
+  },
+  "HTTP_504_GATEWAY_TIMEOUT": {
+    "code": 504,
+    "status": "error",
+    "message": "GATEWAY_TIMEOUT"
+  }
+}

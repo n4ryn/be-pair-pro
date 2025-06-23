@@ -1,15 +1,18 @@
 const jwt = require("jsonwebtoken");
 
 const User = require("../models/user");
+const sendResponse = require("../utils/sendResponse");
+const statusCodes = require("../utils/status.json");
 
 // Validating User
 const userAuth = async (req, res, next) => {
   try {
     const { token } = req.cookies;
     if (!token) {
-      return res
-        .status(401)
-        .send({ status: "error", message: "Invalid token" });
+      sendResponse(res, statusCodes.HTTP_401_UNAUTHORIZED, {
+        error: "Invalid token",
+      });
+      return;
     }
 
     const passwordSelect = !req.url.includes("password") ? "-password" : "";
@@ -27,7 +30,9 @@ const userAuth = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
-    res.status(400).send({ message: "ERROR: " + error.message });
+    sendResponse(res, statusCodes.HTTP_400_BAD_REQUEST, {
+      error: error.message || "Invalid token",
+    });
   }
 };
 
