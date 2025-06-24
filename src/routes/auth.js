@@ -138,7 +138,11 @@ router.post("/signup", async (req, res) => {
       data: { token, user: userData },
       cookie: [
         { type: "token", value: token, config: { expires: expires } },
-        { type: "user", value: userData, config: { expires: expires } },
+        {
+          type: "user",
+          value: JSON.stringify(userData),
+          config: { expires: expires },
+        },
       ],
     });
   } catch (error) {
@@ -224,7 +228,11 @@ router.post("/login", async (req, res) => {
       data: { token, user: user },
       cookie: [
         { type: "token", value: token, config: { expires: expires } },
-        { type: "user", value: user, config: { expires: expires } },
+        {
+          type: "user",
+          value: JSON.stringify(user),
+          config: { expires: expires },
+        },
       ],
     });
   } catch (error) {
