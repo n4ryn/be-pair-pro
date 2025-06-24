@@ -54,6 +54,10 @@ app.use("/user", userRouter);
 app.use("/payment", paymentRouter);
 app.use("/", authRouter);
 
+app.get("/health", (req, res) => {
+  res.send("ok");
+});
+
 // Connect to database and start server
 connectDB()
   .then(() => {
