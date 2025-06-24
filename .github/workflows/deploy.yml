@@ -1,0 +1,13 @@
+name: Test Trigger
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  hello:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hello Message
+        run: echo "🎉 Trigger successful!"
