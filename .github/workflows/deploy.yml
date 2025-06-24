@@ -30,7 +30,8 @@ jobs:
             fi
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            nvm install node 22
+            nvm install --lts
+            nvm use --lts
 
             echo "Installing PM2..."
             if ! command -v pm2 &> /dev/null; then
